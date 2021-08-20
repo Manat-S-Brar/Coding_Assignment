@@ -1,4 +1,4 @@
-/* Program to first n even numbers of the fibonacci series 
+/* Program to print first n even numbers of the fibonacci series 
  *
  * Compilation: even_fibonaci.c
  * Execution: ./a.out
