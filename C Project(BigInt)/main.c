@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX(a, b) ((a) > (b) ? (a) : (b))
+#define MAX(x,y) (((x) > (y) ? (x) : (y)))
 
 typedef struct big_int
 {
@@ -48,6 +48,12 @@ big_int* big_int_constructor(char *value)
     new_bi->num[j] = '\0';
 
     return new_bi;
+}
+
+void big_int_free(big_int *big_num)
+{
+    free(big_num->num);
+    free(big_num);
 }
 
 void big_int_print(const big_int *big_num)
@@ -145,6 +151,8 @@ void big_int_abs_add(big_int *big_num1, const big_int *big_num2)
     }
 
     big_num1->num_of_digits = k;
+    big_num1->is_negative = 0;
+    big_num1->num[k] = '\0';
 }
 
 int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2)
@@ -195,10 +203,97 @@ int big_int_compare(const big_int *big_num1, const big_int *big_num2)
     return 1;
 }
 
+void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
+{
+    char *greater_num;
+    unsigned int greater_num_of_digits;
+
+    char *smaller_num;
+    unsigned int smaller_num_of_digits;
+    
+    if(big_int_abs_compare(big_num1,big_num2) == 0)
+    {
+	big_num1->num_of_digits = 1;
+	big_num1->is_negative = 0;
+	big_num1->num[0] = '0';
+	big_num1->num[1] = '\0';
+	return;
+    } 
+    
+    if(big_int_abs_compare(big_num1,big_num2) > 0)
+    {
+	greater_num = big_num1->num;
+	greater_num_of_digits = big_num1->num_of_digits;
+
+	smaller_num = big_num2->num;
+	smaller_num_of_digits = big_num2->num_of_digits;
+    }
+    else 
+    {
+	greater_num = big_num2->num;
+	greater_num_of_digits = big_num2->num_of_digits;
+
+	smaller_num = big_num1->num;
+	smaller_num_of_digits = big_num1->num_of_digits;
+    }
+
+    int carry = 0;
+
+    unsigned int i = 0;
+    unsigned int j = 0;
+    unsigned int k = 0;
+
+    while(i < greater_num_of_digits && j < smaller_num_of_digits)
+    {
+	smaller_num[j] = ((smaller_num[j] - '0') + carry) + '0';
+
+	if(greater_num[i] >= smaller_num[j])
+	{
+	    big_num1->num[k] = (greater_num[i] - smaller_num[j]) + '0';
+	    carry = 0;
+	}
+	else
+	{
+	    big_num1->num[k] = (10 - (smaller_num[j] - '0') + (greater_num[i] - '0')) + '0';
+	    carry = 1;
+	}
+	i++;
+	j++;
+	k++;
+    }
+
+    while(i < greater_num_of_digits)
+    {
+	if(carry != 0)
+	{
+            big_num1->num[k] = ((greater_num[i] - '0') - carry) + '0';
+	    carry = 0; 
+	}
+	else
+	{
+	    big_num1->num[k] = greater_num[i];
+	}
+	i++;
+	k++;
+    }
+
+    k = k - 1;
+
+    while(big_num1->num[k] == '0')
+    {
+	k--;
+    }
+
+    k = k + 1;
+
+    big_num1->num_of_digits = k;
+    big_num1->is_negative = 0;
+    big_num1->num[k] = '\0';
+}
+
 int main()
 {
-    char a[4];
-    char b[4];
+    char a[5000],b[5000];
     scanf("%s",a);
     scanf("%s",b);
 
@@ -208,7 +303,8 @@ int main()
     big_int *b2 = big_int_constructor(b);
     big_int_print(b2);
     printf("\n");
-
-    printf("%d",big_int_compare(b1,b2));
+   
+    big_int_abs_add(b1,b2); 
+    big_int_print(b1);
     return 0;
 }
