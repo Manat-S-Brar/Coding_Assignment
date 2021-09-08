@@ -21,9 +21,13 @@ void big_int_print(const big_int *big_num);
 void big_int_allocate_digits(big_int *big_num, unsigned int required_digits);
 void big_int_abs_add(big_int *big_num1, const big_int *big_num2);
 void big_int_add(big_int *big_num1, const big_int *big_num2);
+void big_int_add_int(big_int *big_num1, const int int_value);
 int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2);
 int big_int_compare(const big_int *big_num1, const big_int *big_num2);
 void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2);
+void big_int_subtract(big_int *big_num1, const big_int *big_num2);
+void big_int_subtract_int(big_int *big_num1, const int int_value);
+
 
 big_int* big_int_constructor(char *value)
 {   
@@ -56,7 +60,17 @@ big_int* big_int_constructor(char *value)
     {
         new_bi->num[j++] = value[i--]; 
     }
+   
+    j = j - 1;
+
+    while(j > 0 && new_bi->num[j] == '0')
+    {
+	j--;
+    }
     
+    j = j + 1;
+
+    new_bi->num_of_digits = j;
     new_bi->num[j] = '\0';
 
     return new_bi;
@@ -261,6 +275,16 @@ void big_int_add(big_int *big_num1, const big_int *big_num2)
     }
 }
 
+void big_int_add_int(big_int *big_num1, const int int_value)
+{
+    big_int *big_int_value = big_int_constructor("0");
+    big_int_assign_int(big_int_value, int_value);
+
+    big_int_add(big_num1, big_int_value);
+
+    big_int_free(big_int_value);
+}
+
 int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2)
 {
     if(big_num1->num_of_digits > big_num2->num_of_digits)
@@ -370,14 +394,15 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
 
     while(i < greater_num_of_digits)
     {
-	if(carry != 0)
+	if((greater_num[i] - '0') >= carry)
 	{
             big_num1->num[k] = ((greater_num[i] - '0') - carry) + '0';
 	    carry = 0; 
 	}
 	else
 	{
-	    big_num1->num[k] = greater_num[i];
+	    big_num1->num[k] = 9 + '0';
+	    carry = 1;
 	}
 	i++;
 	k++;
@@ -397,27 +422,63 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
     big_num1->num[k] = '\0';
 }
 
+void big_int_subtract(big_int *big_num1, const big_int *big_num2)
+{
+    int result_sign = 0;
+
+    if(big_num1->is_negative != big_num2->is_negative)
+    {
+	result_sign = big_num1->is_negative;
+	big_int_abs_add(big_num1, big_num2);
+	big_num1->is_negative = result_sign;
+    }
+    else
+    {
+	result_sign = big_int_compare(big_num1, big_num2) >= 0 ? 0 : 1;
+	big_int_abs_subtract(big_num1, big_num2);
+	big_num1->is_negative = result_sign;
+    }
+}
+
+void big_int_subtract_int(big_int *big_num1, const int int_value)
+{
+    big_int *big_int_value = big_int_constructor("0");
+    big_int_assign_int(big_int_value, int_value);
+
+    big_int_subtract(big_num1, big_int_value);
+
+    big_int_free(big_int_value);
+}
+
 int main()
 {
-    /*char a[5000],b[5000];
-    scanf("%s",a);
-    scanf("%s",b);
+    int t;
 
-    big_int *b1 = big_int_constructor(a);
-    big_int_print(b1);
-    printf("\n");
-    big_int *b2 = big_int_constructor(b);
-    big_int_print(b2);
-    printf("\n");*/
+    scanf("%d",&t);
+
+    while(t--)
+    {
+        char a[5000],b[5000];
+        scanf("%s",a);
+        scanf("%s",b);
+
+        big_int *b1 = big_int_constructor(a);
+        big_int_print(b1);
+        printf("\n");
+        big_int *b2 = big_int_constructor(b);
+        big_int_print(b2);
+        printf("\n");
     
-    big_int *new = big_int_constructor("0");
-    big_int_print(new);
-    printf("\n");
+        //int x;
+        //scanf("%d",&x);
+        //printf("%d\n",x);
 
-    big_int_assign_int(new,2147483648);
-    big_int_print(new);
-    /*big_int_abs_add(b1,b2); 
-    big_int_print(b1);*/
+        //big_int_subtract_int(b1,x); 
+        big_int_subtract(b1,b2);
+	big_int_print(b1);
 
+        big_int_free(b1);
+        big_int_free(b2);
+    }
     return 0;
 }
