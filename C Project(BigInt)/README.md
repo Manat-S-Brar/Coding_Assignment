@@ -69,7 +69,7 @@ Some of the applications of **BigInt** :
 ```
 ## Usage
 
-2. Declaration
+1. Declaration
 
 ```c
 
@@ -77,7 +77,7 @@ Some of the applications of **BigInt** :
 
 ```
 
-3. Using any function
+2. Using any function
 
 ```c
     
@@ -88,28 +88,34 @@ Some of the applications of **BigInt** :
 
 ## Functions
 
-### Basic mathematical operations
-
-|  Function Name                       | Description |
-| :-----:                              | :--: |
-| `int big_int_compare(const big_int* a, const big_int* b)`      | Returns  **-1** if a < b,  **0** if a == b, **1** if a > b  |
-| `void big_int_add(big_int *big_number, const big_int *big_number1)` | Adds the value of **big_number1** to **big_number** and places it in **big_number** |
-| `void big_int_add_int(big_int *big_number, const int big_number1)` | Adds the value of **big_number1** to **big_number** and places it in **big_number** |
-| `void big_int_subtract(big_int *big_number, const big_int *big_number1)` | Subtracts the value of **big_number1** from **big_number** and places it in **big_number** |
-| `void big_int_subtract_int(big_int *big_number, const int big_number1)` | Subtracts the value of **big_number1** from **big_number** and places it in **big_number** |
-| `void big_int_multiply(big_int *big_number, const big_int *big_number1)` | Multiplies the value of **big_number** by **big_number1** and places it in **big_number** |
-| `void big_int_multiply_int(big_int *big_number, const int big_number1)` | Multiplies the value of **big_number** by **big_number1** and places it in **big_number** |
-| `void big_int_divide(big_int *big_number, const big_int *big_number1)` | Divides the  **big_number** by **big_number1** and places it in **big_number** |
-| `void big_int_divide_int(big_int *big_number, const int big_number1)` | Divides the  **big_number** by **big_number1** and places it in **big_number** |
-| `big_int* big_int_modulo(big_int *big_number, const big_int *big_number1)` | Returns the  **big_number** % **big_number1**|
-| `big_int* big_int_modulo_int(big_int *big_number, const int big_number1)` | Returns the  **big_number** % **big_number1**|
-| `void big_int_print(const big_int* big_number)` | Prints the contents of **big_number** to stdout|
-
-
-### Contructor and Assignment operations
+### Contructor and Assignment functions
 
 |  Function Name                       | Description |
 | :-----:                              | :--: |
 | `big_int* big_int_constructor(char *value)`      | Returns a pointer to a new big_int initialized with specified value|
-| `void big_int_free(big_int *big_number)` | Frees the dynamically allocated memory|
-| `void big_int_assign(big_int *big_number, const big_int *big_number1)` | Sets the value of **big_number** to the value of **big_number1**|
+| `void big_int_free(big_int *big_num)` | Frees the dynamically allocated memory|
+| `void big_int_assign(big_int *big_num1, const big_int *big_num2)` | Assigns big_num2(big_int) to big_num1(big_int) |
+
+### Basic mathematical functions
+
+|  Function Name                       | Description |
+| :-----:                              | :--: |
+| `int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2)`| Returns **0** if |big_num1| == |big_num2|, **1** if |big_num1| > |big_num2|, **-1** if |big_num1| < |big_num2|  |
+| `int big_int_compare(const big_int *big_num1, const big_int *big_num2)`| Returns **0** if big_num1 == big_num2, **1** if big_num1 > big_num2, **-1** if big_num1 < big_num2  |
+| `void big_int_abs_add(big_int *big_num1, const big_int *big_num2)` | Adds the absolute value of **big_num2** to **big_num1** and places it in **big_num1** |
+| `void big_int_add(big_int *big_num1, const big_int *big_num2)` | Adds the value of **big_num2** to **big_num1** and places it in **big_num1** |
+| `void big_int_add_int(big_int *big_num1, const int int_value)` | Adds the value of **int_value** to **big_num1** and places it in **big_num1** |
+| `void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)` | Subtracts the absolute value of **larger number** from **smaller number** and places it in **big_num1** |
+| `void big_int_subtract(big_int *big_num1, const big_int *big_num2)` | Subtracts the value of **big_num2** from **big_num1** and places it in **big_num1** |
+| `void big_int_subtract_int(big_int *big_num1, const int int_value)` | Subtracts the value of **int_value** from **big_num1** and places it in **big_num1** |
+| `void big_int_multiply(big_int *big_num1, const big_int *big_num2)` | Multiplies the value of **big_num1** with **big_num2** and places it in **big_num1** |
+| `void big_int_multiply_int(big_int *big_num1, const int int_value)` | Multiplies the value of **big_num1** by **int_value** and places it in **big_num1** |
+| `void big_int_divide(big_int *big_num1, const big_int *big_num2)` | Divides the  **big_num1** by **big_num2** and places it in **big_num1** |
+| `void big_int_divide_int(big_int *big_num1, const int int_value)` | Divides the  **big_num1** by **int_value** and places it in **big_num1** |
+| `void big_int_modulo(big_int *big_num1, const big_int *big_num2)` | Places the remainder in **big_num1** when **big_num1** is divided by **big_num2**|
+| `void big_int_modulo_int(big_int *big_num1, const int int_value)` | Places the remainder in **big_num1** when **big_num1** is divided by **int_value**|
+
+### Miscellaneous functions
+
+| `void big_int_print(const big_int* big_num)` | Prints **big_num**|
+| `void big_int_allocate_digits(big_int *big_num, unsigned int required_digits)` | If big_num->size < required digits, this function increases big_num->size by dynamically allocating memory|
