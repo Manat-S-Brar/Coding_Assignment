@@ -337,12 +337,16 @@ int big_int_compare(const big_int *big_num1, const big_int *big_num2)
 
 void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
 {
-    char *greater_num;
+    big_int *greater_num = big_int_constructor("0");
+    big_int *smaller_num = big_int_constructor("0");
+    
+    /*char *greater_num;
     unsigned int greater_num_of_digits;
 
     char *smaller_num;
     unsigned int smaller_num_of_digits;
-    
+    */
+
     if(big_int_abs_compare(big_num1,big_num2) == 0)
     {
 	big_num1->num_of_digits = 1;
@@ -354,19 +358,25 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
     
     if(big_int_abs_compare(big_num1,big_num2) > 0)
     {
-	greater_num = big_num1->num;
+	/*greater_num = big_num1->num;
 	greater_num_of_digits = big_num1->num_of_digits;
 
 	smaller_num = big_num2->num;
-	smaller_num_of_digits = big_num2->num_of_digits;
+	smaller_num_of_digits = big_num2->num_of_digits;*/
+
+        big_int_assign(greater_num, big_num1);
+	big_int_assign(smaller_num, big_num2);
     }
     else 
     {
-	greater_num = big_num2->num;
+	/*greater_num = big_num2->num;
 	greater_num_of_digits = big_num2->num_of_digits;
 
 	smaller_num = big_num1->num;
-	smaller_num_of_digits = big_num1->num_of_digits;
+	smaller_num_of_digits = big_num1->num_of_digits;*/
+
+        big_int_assign(greater_num, big_num2);
+	big_int_assign(smaller_num, big_num1);
     }
 
     int carry = 0;
@@ -375,18 +385,18 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
     unsigned int j = 0;
     unsigned int k = 0;
 
-    while(i < greater_num_of_digits && j < smaller_num_of_digits)
+    while(i < greater_num->num_of_digits && j < smaller_num->num_of_digits)
     {
-	smaller_num[j] = ((smaller_num[j] - '0') + carry) + '0';
+	smaller_num->num[j] = ((smaller_num->num[j] - '0') + carry) + '0';
 
-	if(greater_num[i] >= smaller_num[j])
+	if(greater_num->num[i] >= smaller_num->num[j])
 	{
-	    big_num1->num[k] = (greater_num[i] - smaller_num[j]) + '0';
+	    big_num1->num[k] = (greater_num->num[i] - smaller_num->num[j]) + '0';
 	    carry = 0;
 	}
 	else
 	{
-	    big_num1->num[k] = (10 - (smaller_num[j] - '0') + (greater_num[i] - '0')) + '0';
+	    big_num1->num[k] = (10 - (smaller_num->num[j] - '0') + (greater_num->num[i] - '0')) + '0';
 	    carry = 1;
 	}
 	i++;
@@ -394,11 +404,11 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
 	k++;
     }
 
-    while(i < greater_num_of_digits)
+    while(i < greater_num->num_of_digits)
     {
-	if((greater_num[i] - '0') >= carry)
+	if((greater_num->num[i] - '0') >= carry)
 	{
-            big_num1->num[k] = ((greater_num[i] - '0') - carry) + '0';
+            big_num1->num[k] = ((greater_num->num[i] - '0') - carry) + '0';
 	    carry = 0; 
 	}
 	else
@@ -422,6 +432,9 @@ void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2)
     big_num1->num_of_digits = k;
     big_num1->is_negative = 0;
     big_num1->num[k] = '\0';
+
+    big_int_free(greater_num);
+    big_int_free(smaller_num);
 }
 
 void big_int_subtract(big_int *big_num1, const big_int *big_num2)
@@ -570,8 +583,6 @@ void big_int_divide(big_int *big_num1, const big_int *big_num2)
 	{
 	    count++;
 	    big_int_abs_subtract(big_num1, big_num2);
-	    big_int_print(big_num1);
-	    printf("\n");
 	}
 	big_int_assign_int(big_num1, count);
     }
