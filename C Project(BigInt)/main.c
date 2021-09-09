@@ -27,7 +27,9 @@ int big_int_compare(const big_int *big_num1, const big_int *big_num2);
 void big_int_abs_subtract(big_int *big_num1, const big_int *big_num2);
 void big_int_subtract(big_int *big_num1, const big_int *big_num2);
 void big_int_subtract_int(big_int *big_num1, const int int_value);
-
+void big_int_multiply(big_int *big_num1, const big_int *big_num2);
+void big_int_multiply_int(big_int *big_num1, const int int_value);
+void big_int_divide(big_int *big_num1, const big_int *big_num2);
 
 big_int* big_int_constructor(char *value)
 {   
@@ -450,6 +452,132 @@ void big_int_subtract_int(big_int *big_num1, const int int_value)
     big_int_free(big_int_value);
 }
 
+void big_int_multiply(big_int *big_num1, const big_int *big_num2)
+{
+    if((big_num1->num_of_digits == 1 && big_num1->num[0] == '0') || (big_num2->num_of_digits == 1 && big_num2->num[0] == '0'))
+    {
+	big_num1->num_of_digits = 1;
+	big_num1->num[0] = '0';
+	big_num1->is_negative = 0;
+	return;	
+    }	
+
+    big_int *result = big_int_constructor("0");
+
+    big_int *partial_product = big_int_constructor("0");
+
+    unsigned int required_digits = big_num1->num_of_digits + big_num2->num_of_digits + 1;
+
+    big_int_allocate_digits(partial_product, required_digits);
+
+    unsigned int i, j, k;
+    int carry = 0;
+
+    for(i = 0 ; i < big_num2->num_of_digits ; i++)
+    {
+        if(i > 0)
+	{
+	    partial_product->num[i - 1] = '0';
+	}
+
+	k = i;
+
+	for(j = 0 ; j < big_num1->num_of_digits ; j++)
+	{
+	    int temp_mul = (big_num2->num[i] - '0') * (big_num1->num[j] - '0') + carry;
+
+	    if(temp_mul > 9)
+	    {
+		carry = temp_mul / 10;
+		temp_mul %= 10;
+	    }
+	    else
+	    {
+		carry = 0;
+	    }
+
+	    partial_product->num[k++] = temp_mul + '0';
+	}
+
+	if(carry != 0)
+	{
+	    partial_product->num[k++] = carry + '0';
+	    carry = 0;
+	}
+
+	partial_product->num_of_digits = k;
+
+	big_int_add(result, partial_product);
+    }
+
+    if(big_num1->is_negative == big_num2->is_negative)
+    {
+	result->is_negative = 0;
+    }
+    else
+    {
+	result->is_negative = 1;
+    }
+
+    big_int_assign(big_num1, result);
+    
+    big_int_free(result);
+    big_int_free(partial_product);
+}
+
+void big_int_multiply_int(big_int *big_num1, const int int_value)
+{
+    big_int *big_int_value = big_int_constructor("0");
+    big_int_assign_int(big_int_value, int_value);
+
+    big_int_multiply(big_num1, big_int_value);
+
+    big_int_free(big_int_value);
+}
+
+void big_int_divide(big_int *big_num1, const big_int *big_num2)
+{
+    if(big_num2->num_of_digits == 1 && big_num2->num[0] == '0')
+    {
+	printf("Error: Divide by zero");
+	exit(1);
+    }
+
+    int result_sign = 0;
+
+    if(big_num1->is_negative != big_num2->is_negative)
+    {
+	result_sign = 1;
+    }
+
+    if(big_int_abs_compare(big_num1, big_num2)  == 0)
+    {
+	big_num1->num_of_digits = 1;
+	big_num1->num[0] = '1';
+	big_num1->is_negative = result_sign;
+    }
+    else if((big_int_abs_compare(big_num1, big_num2)  < 0 ) || ( big_num1->num_of_digits == 1 && big_num1->num[0] == '0'))
+    {	
+	big_num1->num_of_digits = 1;
+	big_num1->num[0] = '0';
+	big_num1->is_negative = 0;
+    }
+    else
+    {
+	unsigned int count = 0;
+        
+       	while(big_int_abs_compare(big_num1, big_num2) >= 0)
+	{
+	    count++;
+	    big_int_abs_subtract(big_num1, big_num2);
+	    big_int_print(big_num1);
+	    printf("\n");
+	}
+	big_int_assign_int(big_num1, count);
+    }
+    big_num1->is_negative = result_sign;
+}
+
 int main()
 {
     int t;
@@ -474,11 +602,41 @@ int main()
         //printf("%d\n",x);
 
         //big_int_subtract_int(b1,x); 
-        big_int_subtract(b1,b2);
+        big_int_divide(b1,b2);
 	big_int_print(b1);
 
         big_int_free(b1);
         big_int_free(b2);
     }
+
+    /*int x;
+    scanf("%d",&x);
+
+    while(x--)
+    {
+        int t;
+        scanf("%d",&t);
+
+        int p;
+        scanf("%d",&p);
+        
+	big_int *f = big_int_constructor("1");
+        big_int_assign_int(f,t);
+
+	big_int *r = big_int_constructor("0");
+	big_int_assign(r,f);
+
+        while(p > 1)
+        {
+            big_int_multiply(r,f);
+	    p--;
+        }
+
+        big_int_print(r);
+
+        big_int_free(f);
+        big_int_free(r);
+    }*/
+
     return 0;
 }
