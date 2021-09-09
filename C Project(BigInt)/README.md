@@ -12,7 +12,7 @@ In `C`,
 
 But what if we want to store even a bigger integer? 
 
-To solve this problem, I have tried to implement the **BigInt** library which can be used to do basic mathematical operations(addition, subtraction, multiplication, division etc.) on arbitrarily large numbers (theoratically no limit). This library can also handle negative integers.
+To solve this problem, I have tried to implement the **BigInt** library which can be used to do basic mathematical operations(addition, subtraction, multiplication, division etc.) on arbitrarily large numbers. This library can also handle negative integers.
 
 Some of the applications of **BigInt** :
 
@@ -31,27 +31,44 @@ Some of the applications of **BigInt** :
 
 - `int num_of_digits`: To store the count of digits in the given number
 - `int is_nagative`: To check whether the given number is negative or positive
+- `int size`: Actual Size of char array
 - `char *num`: To store the number 
 
 ```c
-    typedef struct big_int 
+    typedef struct big_int
     {
-         int num_of_digits; // Number of digits in the number
-         int is_negative; // 1 if the number is negative and 0 if number is positive
-         char* num; // Array for storing the number
+        char *num; // Array for storing the number(stored in reverse order)
+        unsigned int size; // Size of num array;
+        unsigned int num_of_digits; // Number of digits in the number
+        unsigned int is_negative; // 1 if the number is negative and 0 if the number is positive
+
     } big_int;
 
 ```
 
-## Usage
+## Setup
 
-1. Import `BigInt.h` into your C file.
+1. Create a new C file in desired directory.
+```shell
+    touch test.c
+```
+2. Import `BigInt.h` into your C file.
 
 ```c
 
     #include "BigInt.h" 
 
 ```
+3. Compile the program with GCC
+```shell
+    gcc BigInt.c test.c
+```
+4. Run the executible
+```shell
+    ./a.out
+```
+## Usage
+
 2. Declaration
 
 ```c
