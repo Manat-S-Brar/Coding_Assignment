@@ -100,7 +100,7 @@ Some of the applications of **BigInt** :
 
 |  Function Name                       | Description |
 | :-----:                              | :--: |
-| `int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2)`| Returns **0** if |big_num1| == |big_num2|, **1** if |big_num1| > |big_num2|, **-1** if |big_num1| < |big_num2|  |
+| `int big_int_abs_compare(const big_int *big_num1, const big_int *big_num2)`| Returns **0** if abs(big_num1) == abs(big_num2), **1** if abs(big_num1) > abs(big_num2), **-1** if abs(big_num1) < abs(big_num2)  |
 | `int big_int_compare(const big_int *big_num1, const big_int *big_num2)`| Returns **0** if big_num1 == big_num2, **1** if big_num1 > big_num2, **-1** if big_num1 < big_num2  |
 | `void big_int_abs_add(big_int *big_num1, const big_int *big_num2)` | Adds the absolute value of **big_num2** to **big_num1** and places it in **big_num1** |
 | `void big_int_add(big_int *big_num1, const big_int *big_num2)` | Adds the value of **big_num2** to **big_num1** and places it in **big_num1** |
@@ -117,5 +117,7 @@ Some of the applications of **BigInt** :
 
 ### Miscellaneous functions
 
+|  Function Name                       | Description |
+| :-----:                              | :--: |
 | `void big_int_print(const big_int* big_num)` | Prints **big_num**|
 | `void big_int_allocate_digits(big_int *big_num, unsigned int required_digits)` | If big_num->size < required digits, this function increases big_num->size by dynamically allocating memory|
